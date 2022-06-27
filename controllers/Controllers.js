@@ -18,7 +18,7 @@ class Controllers {
                     html+=`<td><a href="/delete-info?id=${value['id']}">delete</a></td>`
                     html+=`</tr>`
                 })
-                data = data.replace('{list-city',html);
+                data = data.replace('{list-city}',html);
                 res.writeHead(200,'success',{'Content-Type': 'text/html'})
                 res.write(data);
                 res.end();
@@ -33,9 +33,11 @@ class Controllers {
             if(err){
                 console.log(err);
             }
-            let html = ''
-            let cityname='';
             let result = Models.slqInfoCity(urlQuery['id']).then(dataBS => {
+                let html = ''
+
+                let cityname='';
+
                 console.log(dataBS);
                 dataBS.forEach(value => {
                     cityname = value['cityname']
@@ -45,14 +47,15 @@ class Controllers {
                     html += `Area: ${value['area']}`
                     html += `Describecity: ${value['describecity']}`
                 })
+                console.log(html);
+                data = data.replace('{name-city}',cityname)
+                data = data.replace('{info-city}',html);
+                // console.log(data);
+                res.writeHead(200,'success',{'Content-Type': 'text/html'})
+                res.write(data);
+                res.end();
             })
-            console.log(html);
-            data = data.replace('{name-city}',cityname)
-            data = data.replace('{info-city}',html);
-            // console.log(data);
-            res.writeHead(200,'success',{'Content-Type': 'text/html'})
-            res.write(data);
-            res.end();
+
         }))
     };
 
@@ -67,8 +70,9 @@ class Controllers {
         })
     }
     fixInfo(req,res){
+        let urlQuery = url.parse(req.url,true).query['id'];
         if(req.method === 'GET'){
-            let urlQuery = url.parse(req.url,true).query['id'];
+
             // console.log(urlQuery);
             fs.readFile('./views/fix-info.html','utf-8',((err, data) => {
                 if(err){
@@ -94,8 +98,35 @@ class Controllers {
             })
             req.on('end',() =>{
                 let dataHTML = qs.parse(data);
-                Models.fixInfo(dataHTML).then(dataBS=>{
+                Models.fixInfo(dataHTML,urlQuery).then(dataBS=>{
+                    res.writeHead(301,{Location:'/home'})
+                    res.end();
+                })
+            })
+        }
+    };
 
+    create(req, res){
+        if(req.method ==='GET'){
+            fs.readFile('./views/create.html',"utf-8",(err, data) => {
+                if(err){
+                    console.log(err);
+                }else{
+                    res.writeHead(200,'success',{'Content-Type':'text/html'});
+                    res.write(data)
+                    res.end();
+                }
+            })
+        }else{
+            let data = ''
+            req.on('data',chunk =>{
+                data+=chunk
+            })
+            req.on('end',() =>{
+              let   dataHTML =qs.parse(data)
+                Models.createNewCity(dataHTML).then(dataBS=>{
+                    res.writeHead(301,{Location:'http://localhost:3000/home'});
+                    res.end();
                 })
             })
         }

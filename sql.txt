@@ -1,0 +1,13 @@
+create database Bigcity;
+create table City (
+id INT(6)  AUTO_INCREMENT PRIMARY KEY,
+cityname VARCHAR(30) NOT NULL,
+Nationnal VARCHAR(30) NOT NULL,
+population int(20) not null,
+area int(10),
+describecity varchar(30));
+
+insert into City (cityname,Nationnal,population,area,describecity) values('Hanoi','VietNam',10000000,3000,'very beatiful');
+insert into City (cityname,Nationnal,population,area,describecity) values('HCM','VietNam',13000000,4000,'very hard');
+
+SELECT * FROM City

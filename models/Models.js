@@ -31,27 +31,54 @@ class Models {
             })
         })
     };
-    deleteCity(urlQueryID){
+
+    deleteCity(urlQueryID) {
         return new Promise((resolve, reject) => {
             let sql = `delete from city where id = ${urlQueryID};`;
             Database.connect().query(sql, (err, data) => {
                 if (err) {
                     reject(err)
-                }else{
+                } else {
                     resolve(data)
                 }
             })
         })
     };
-    fixInfo(data){
+
+    fixInfo(data, idDrinks) {
         console.log(data)
         return new Promise((resolve, reject) => {
-            let sql = ``
+                let sql = `UPDATE city
+SET cityname = '${data.name}', nationnal = '${data.country}', area = '${data.area}',population = '${data.population}',describecity = '${data.describption}'
+WHERE id = '${idDrinks}';`
+                Database.connect().query(sql, (err, data) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(data)
+                    }
+                })
             }
         )
+    };
+
+    createNewCity(data){
+        return new Promise((resolve, reject) => {
+            console.log(data);
+            let sql = `insert into City (cityname,Nationnal,population,area,describecity) values('${data.name}','${data.country}','${data.population}','${data.area}','${data.description}')`;
+            Database.connect().query(sql, (err, data) => {
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(data);
+                }
+            })
+        })
+
+
     }
 
-    
+
 }
 
 module.exports = Models;

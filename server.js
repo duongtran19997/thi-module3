@@ -15,10 +15,13 @@ const server = http.createServer(function (req, res) {
             break;
         case'/delete-info':
             Controllers.deleteCity(req, res);
+            break;
         case '/fix-info':
             Controllers.fixInfo(req, res);
             break;
-
+        case '/create':
+            Controllers.create(req, res);
+            break;
     }
 })
 
